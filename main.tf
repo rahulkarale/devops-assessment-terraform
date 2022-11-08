@@ -115,7 +115,7 @@ module "ecs_load_balancer" {
   vpc_id     = data.aws_vpc.default_vpc.id
   subnet_ids = data.aws_subnets.subnets.ids
 
-  service_name = "petclinic"
+  service_name = "travelperk-app"
   service_port = "8080"
 
   health_check_path = "/"
