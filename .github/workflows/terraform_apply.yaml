@@ -1,15 +1,14 @@
-name: 'Terraform_plan'
+name: 'Terraform_apply'
 
 on:
   push:
     branches:
-      - master
-  pull_request:
+      - 'master'
 
 
 jobs:
   terraform:
-    name: 'Terraform_Plan'
+    name: 'Terraform_apply'
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -33,7 +32,9 @@ jobs:
       - name: Plan Terraform
         id: plan
         continue-on-error: true
-        run: terraform plan -input=false -no-color    
+        run: |
+          terraform plan -input=false -no-color -out=tfplan \
+          && terraform show -no-color tfplan          
 
       # Sed is taking all lines that begin with one or more spaces followed by a `+` or `-`.
       # It stores the amount of spaces in `\1` and the +/- in `\2`.
@@ -50,16 +51,31 @@ jobs:
           PLAN=$(cat plan.txt)
           echo "PLAN<<EOF" >> $GITHUB_ENV
           echo "$PLAN" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV       
+          echo "EOF" >> $GITHUB_ENV          
 
-      - name: Post Plan to GitHub PR
+      - name: Apply Terraform
+        if: steps.plan.outcome == 'success'
+        id: apply
+        continue-on-error: true
+        run: |
+          terraform apply \
+            -input=false \
+            -no-color \
+            tfplan
+
+      - name: Post Plan and Apply to GitHub PR
+        if: steps.plan.outcome == 'success' && steps.apply.outcome == 'success'
         uses: mshick/add-pr-comment@v1
         with:
-          allow-repeats: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           message: |
-            ## ${{ matrix.path }} plan
+            Applying :
+
             ```diff
             ${{ env.PLAN }}
+            ```
+
+            ```
+            ${{ steps.apply.outputs.stdout }}
             ```
