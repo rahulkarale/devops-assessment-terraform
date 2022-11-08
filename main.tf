@@ -67,7 +67,7 @@ module "ecs" {
         # You can set a simple string and ECS will create the CloudWatch log group for you
         # or you can create the resource yourself as shown here to better manage retention, tagging, etc.
         # Embedding it into the module is not trivial and therefore it is externalized
-        cloud_watch_log_group_name = var.include_log_group == "yes" ? aws_cloudwatch_log_group.this.name : null
+        cloud_watch_log_group_name = null
       }
     }
   }
@@ -86,19 +86,6 @@ module "ecs" {
       }
     }
   }
-
-  tags = local.tags
-}
-
-################################################################################
-# Supporting Resources
-################################################################################
-
-resource "aws_cloudwatch_log_group" "this" {
-  count = var.include_log_group == "yes" ? 1 : 0
-
-  name              = "/aws/ecs/${local.name}"
-  retention_in_days = 7
 
   tags = local.tags
 }
