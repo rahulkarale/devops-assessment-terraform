@@ -63,12 +63,6 @@ module "ecs" {
   cluster_configuration = {
     execute_command_configuration = {
       logging = "OVERRIDE"
-      log_configuration = {
-        # You can set a simple string and ECS will create the CloudWatch log group for you
-        # or you can create the resource yourself as shown here to better manage retention, tagging, etc.
-        # Embedding it into the module is not trivial and therefore it is externalized
-        cloud_watch_log_group_name = null
-      }
     }
   }
 

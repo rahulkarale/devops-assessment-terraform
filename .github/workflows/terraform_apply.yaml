@@ -53,15 +53,15 @@ jobs:
           echo "$PLAN" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV          
 
-      - name: Apply Terraform
-        if: steps.plan.outcome == 'success'
-        id: apply
-        continue-on-error: true
-        run: |
-          terraform apply \
-            -input=false \
-            -no-color \
-            tfplan
+      # - name: Apply Terraform
+      #   if: steps.plan.outcome == 'success'
+      #   id: apply
+      #   continue-on-error: true
+      #   run: |
+      #     terraform apply \
+      #       -input=false \
+      #       -no-color \
+      #       tfplan
 
       - name: Post Plan and Apply to GitHub PR
         if: steps.plan.outcome == 'success' && steps.apply.outcome == 'success'
