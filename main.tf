@@ -115,7 +115,7 @@ module "ecs_load_balancer" {
   vpc_id     = data.aws_vpc.default_vpc.id
   subnet_ids = data.aws_subnets.subnets.ids
 
-  service_name = "petclinic"
+  service_name = "travelperk-app"
   service_port = "8080"
 
   health_check_path = "/"
@@ -145,9 +145,9 @@ module "ecs_service" {
   task_cpu                  = 256
   task_memory               = 512
 
-  service_name   = "petclinic"
-  service_image  = "satishing/spring-petclinic"
-  service_port   = "8080"
+  service_name   = "travelperk-app"
+  service_image  = "karalegb/travelperk-app"
+  service_port   = "5000"
   service_cpu    = 10
   service_memory = 256
 
@@ -156,7 +156,7 @@ module "ecs_service" {
   service_deployment_minimum_healthy_percent = "100"
 
   target_group_arn   = module.ecs_load_balancer.target_group_arn
-  target_port        = "8080"
+  target_port        = "5000"
   service_role       = data.aws_iam_role.task_ecs.arn
   execution_role_arn = data.aws_iam_role.task_ecs.arn
 
