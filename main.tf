@@ -67,7 +67,7 @@ module "ecs" {
         # You can set a simple string and ECS will create the CloudWatch log group for you
         # or you can create the resource yourself as shown here to better manage retention, tagging, etc.
         # Embedding it into the module is not trivial and therefore it is externalized
-        cloud_watch_log_group_name = aws_cloudwatch_log_group.this.name
+        cloud_watch_log_group_name = var.include_log_group == "yes" ? aws_cloudwatch_log_group.this.name : null
       }
     }
   }
@@ -95,6 +95,8 @@ module "ecs" {
 ################################################################################
 
 resource "aws_cloudwatch_log_group" "this" {
+  count = var.include_log_group == "yes" ? 1 : 0
+
   name              = "/aws/ecs/${local.name}"
   retention_in_days = 7
 
@@ -144,6 +146,7 @@ module "ecs_service" {
   service_task_network_mode = "awsvpc"
   task_cpu                  = 256
   task_memory               = 512
+  include_log_group         = var.include_log_group
 
   service_name   = "travelperk-app"
   service_image  = "karalegb/travelperk-app"
@@ -173,5 +176,4 @@ module "ecs_service" {
 
   tags = local.tags
 }
-
 

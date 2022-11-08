@@ -22,3 +22,8 @@ variable "environment" {
   description = "The environment for the  project"
   type        = string
 }
+
+variable "include_log_group" {
+  description = "The environment for CloudWatch resource"
+  type        = string
+}
