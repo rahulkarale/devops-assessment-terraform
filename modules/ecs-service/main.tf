@@ -57,16 +57,14 @@ locals {
           replace(
             replace(
               replace(
-                replace(
-                  local.service_task_container_definitions_template,
-                "$${name}", var.service_name),
-              "$${image}", var.service_image),
-            "$${cpu}", tonumber(var.service_cpu)),
-          "$${memory}", tonumber(var.service_memory)),
-        "$${command}", jsonencode(var.service_command)),
-      "$${port}", var.service_port),
-    "$${region}", var.region),
-  "$${log_group}", var.include_log_group == "yes" ? aws_cloudwatch_log_group.this[0].name : "")
+                local.service_task_container_definitions_template,
+              "$${name}", var.service_name),
+            "$${image}", var.service_image),
+          "$${cpu}", tonumber(var.service_cpu)),
+        "$${memory}", tonumber(var.service_memory)),
+      "$${command}", jsonencode(var.service_command)),
+    "$${port}", var.service_port),
+  "$${region}", var.region)
 }
 
 resource "aws_ecs_task_definition" "this" {
